@@ -2,15 +2,23 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pandas as pd
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="Smart Styling API")
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 DATA_PATH = Path(__file__).resolve().parents[1] / "dataset" / "Female_Fashion_Dataset.xlsx"
 
 if not DATA_PATH.exists():
     df = None
 else:
     df = pd.read_excel(DATA_PATH).fillna("")
+
 
 @app.get("/")
 def home():
